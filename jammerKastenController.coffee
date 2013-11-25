@@ -1,8 +1,31 @@
 
-define []
-        , () ->
+define ['jquery']
+        , ($) ->
 
-  controller = (scope) ->
+
+  data = [
+    {  writer:'Peter Paul'
+     , date:'vor zwei Tagen'
+     , text: 'ed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.'
+     , comments:[  {name:'Hans Müller', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy' }
+                 , {name:'Wolfgang Bär', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
+                 , {name:'Tina Lischen', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
+                 , {name:'Ulf Paul', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' }
+                 , {name:'Paul Laufland', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonu' }
+                 , {name:'Otto Kay', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' } ] },
+
+    {  writer:'Peter Paul'
+    , date:'vor zwei Tagen'
+    , text: 'ed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.'
+    , comments:[  {name:'Hans Müller', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy' }
+    , {name:'Wolfgang Bär', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
+    , {name:'Tina Lischen', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
+    , {name:'Ulf Paul', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' }
+    , {name:'Paul Laufland', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonu' }
+    , {name:'Otto Kay', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' } ] }
+  ]
+
+  controller = (scope, templateCache) ->
     console.log 'called jammerKastenController'
     weekNo = 0
 
@@ -20,6 +43,7 @@ define []
 
       weekNo = week if week?
 
+      scope.notes = data
 
       scope.weekNo = weekNo # = 1
       scope.yearNo = if typeof year is 'number' then year else year.getFullYear()
@@ -29,6 +53,8 @@ define []
       scope.weekNos.unshift {weekNo:1, notes:Math.floor(Math.random() * 10)}  if weekNo isnt 1
 
     setupWeeks new Date()
+
+#    ($ 'DIV#notesArea').append $ templateCache.get 'oneThing'
 
     scope.prevWeek = () ->
       if scope.weekNo is 1
@@ -41,6 +67,25 @@ define []
           setupWeeks scope.yearNo+1, 1
         else
           setupWeeks scope.yearNo, scope.weekNo+1
+
+    bMouseDown = false
+    scope.noteMouseDown = ($event) ->
+      $event.preventDefault()
+      bMouseDown = true if $event.which is 1
+
+
+    scope.noteMouseUp = () -> bMouseDown = false
+    scope.noteMouseLeave=()-> bMouseDown = false
+
+
+    scope.noteMouseMove = ($event, note) ->
+      if bMouseDown
+        console.log $event.webkitMovementX
+        console.log $event.webkitMovementY
+        $elem = ($ event.target).parent()
+        offset= $elem.offset()
+        $elem.css {left:offset.left+$event.webkitMovementX, top:offset.top+$event.webkitMovementY, right:''}
+        ($ $elem).unbind()
 
 
     scope.selectedWeek = (week) ->
@@ -56,4 +101,4 @@ define []
 
 
   console.log 'defined jammerKastenController'
-  return ['$scope', controller]
+  return ['$scope', '$templateCache', controller]

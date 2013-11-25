@@ -24,3 +24,8 @@ DIV#weekNos {
 a {
     cursor: pointer;
 }
+
+.panel {
+    max-width: 300px;
+    min-width: 200px;
+}

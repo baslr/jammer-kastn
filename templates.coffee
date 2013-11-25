@@ -27,6 +27,18 @@ define ['app']
   </ul>
 
   <a href="#/view2"> view 2</a>
+
+  <div id="notesArea">
+    <div class="panel panel-default" data-ng-repeat="note in notes" style="position:absolute; top:50%; right:50%;">
+      <div style="cursor:pointer;" class="panel-heading" data-ng-mouseleave="noteMouseLeave()" data-ng-mouseup="noteMouseUp()" ng-mousemove="noteMouseMove($event, note)" ng-mousedown="noteMouseDown($event, note)">{{note.writer}} | {{note.date}}</div>
+      <div class="panel-body">
+        {{ note.text }}
+        <dl>
+        <dt ng-repeat-start="user in note.comments">{{user.name}}</dt>
+        <dd ng-repeat-end>{{ user.comment }}</dd>
+      </div>
+    </div>
+  </div>
 </div>
 """
     templateCache.put 'view2.html', """
@@ -37,4 +49,27 @@ define ['app']
 </ul>
 
 <a href="#view1">back </a>"""
+
+    templateCache.put 'oneThing', """
+<div class="panel panel-default">
+  <div class="panel-heading">Peter Paul | vor zwei Tagen</div>
+  <div class="panel-body">
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+  <dl>
+    <dt>Hans Müller</dt>
+    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
+    <dt>Wolfgang Bär</dt>
+    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
+    <dt>Tina Lischen</dt>
+    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
+    <dt>Ulf Paul</dt>
+    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
+    <dt>Paul Laufland</dt>
+    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
+    <dt>Otto Kay</dt>
+    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
+  </dl>
+  </div>
+</div>
+"""
   ]
