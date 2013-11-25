@@ -6,12 +6,12 @@ define ['app']
     templateCache.put 'view1.html', """
 <div>
   <div class="btn-group">
-    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-left"></span></button>
+    <button type="button" class="btn btn-default" data-ng-click="prevWeek()"><span class="glyphicon glyphicon-chevron-left"></span></button>
     <button data-toggle="dropdown" class="btn btn-default" data-ng-click="showWeeks()">{{ weekNo }} KW {{ yearNo }}</button>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-      <li data-ng-repeat="weekNo in weekNos" data-ng-click="selectedWeek(weekNo)"><a>{{ weekNo }} KW</a></li>
+      <li data-ng-repeat="weekNo in weekNos" data-ng-click="selectedWeek(weekNo)"><a>{{ weekNo.weekNo }} KW <span class="badge">{{ weekNo.notes }}</span></a></li>
     </ul>
-    <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-arrow-right"></span></button>
+    <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
 
   <h2>view1</h2>
