@@ -2,105 +2,65 @@
 define ['jquery']
         , ($) ->
 
-
-  data = [
-    {  writer:'Peter Paul'
-     , date:'vor zwei Tagen'
-     , text: 'ed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.'
-     , comments:[  {name:'Hans Müller', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy' }
-                 , {name:'Wolfgang Bär', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
-                 , {name:'Tina Lischen', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
-                 , {name:'Ulf Paul', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' }
-                 , {name:'Paul Laufland', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonu' }
-                 , {name:'Otto Kay', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' } ] },
-
-    {  writer:'Peter Paul'
-    , date:'vor zwei Tagen'
-    , text: 'ed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.'
-    , comments:[  {name:'Hans Müller', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy' }
-    , {name:'Wolfgang Bär', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
-    , {name:'Tina Lischen', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
-    , {name:'Ulf Paul', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' }
-    , {name:'Paul Laufland', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonu' }
-    , {name:'Otto Kay', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' } ] }
-  ]
-
-  controller = (scope, templateCache) ->
+  controller = (scope, weeksService, notesService) ->
     console.log 'called jammerKastenController'
-    weekNo = 0
 
-    setupWeeks = (year = new Date().getFullYear(), week) ->
-      if typeof year is 'number'
-        d = new Date "#{year}-01-01 00:00:00"
-      else
-        d = year
+    updateDropdown = (list) ->
+      scope.currentWeek = list.week
+      scope.currentYear = list.year
+      notes = notesService.getNoteCount list
+      scope.weeksDropdown = weeksService.generateDropdown list, notes
+      scope.notes = notesService.getNotesForWeek scope.currentYear, scope.currentWeek
 
-      d.setHours(0,0,0)
+    scope.currentYear = new Date().getFullYear()
+    scope.currentWeek = weeksService.getCurrentWeek()
+    scope.notes       = notesService.getNotesForWeek scope.currentYear, scope.currentWeek
 
-      d.setDate(d.getDate() + 4 - (d.getDay()||7))
-      yearStart = new Date d.getFullYear(),0,1
-      weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7)
+    updateDropdown weeksService.getList scope.currentYear, scope.currentWeek
 
-      weekNo = week if week?
-
-      scope.notes = data
-
-      scope.weekNo = weekNo # = 1
-      scope.yearNo = if typeof year is 'number' then year else year.getFullYear()
-      scope.weekNos = []
-      scope.weekNos = ( {weekNo:n, notes:Math.floor(Math.random() * 10)} for n in [1+weekNo..52]) if weekNo < 52
-
-      scope.weekNos.unshift {weekNo:1, notes:Math.floor(Math.random() * 10)}  if weekNo isnt 1
-
-    setupWeeks new Date()
-
-    scope.prevWeek = () ->
-      if scope.weekNo is 1
-        setupWeeks scope.yearNo-1, 52
-      else
-        setupWeeks scope.yearNo, scope.weekNo-1
-
-    scope.nextWeek = () ->
-        if scope.weekNo is 52
-          setupWeeks scope.yearNo+1, 1
-        else
-          setupWeeks scope.yearNo, scope.weekNo+1
+    scope.prevWeek = () -> updateDropdown weeksService.getList scope.currentYear, scope.currentWeek-1
+    scope.nextWeek = () -> updateDropdown weeksService.getList scope.currentYear, scope.currentWeek+1
 
     bMouseDown = false
-    scope.noteMouseDown = ($event) ->
+
+    scope.noteMouseUp = scope.noteMouseLeave = () -> bMouseDown = false
+
+    scope.noteMouseDown = ($event, note) ->
+      return if $event.which isnt 1
+
       $event.preventDefault()
-      bMouseDown = true if $event.which is 1
 
+      bMouseDown = true
+      z = 1
+      ($ 'DIV#notesArea .panel').each ->
+        idx = ($ this).css 'z-index'
+        z = idx if idx isnt 'auto' and z < idx
+      ($ $event.target).parent().css 'z-index', ++z
 
-    scope.noteMouseUp = () -> bMouseDown = false
-    scope.noteMouseLeave=()-> bMouseDown = false
+      note.position['z-index'] = z
+      notesService.save note
+      undefined
+
 
 
     scope.noteMouseMove = ($event, note) ->
       return if not bMouseDown
 
-      console.log $event.webkitMovementX
-      console.log $event.webkitMovementY
       $elem = ($ event.target).parent()
       offset= $elem.offset()
-      offset.left = 0 if offset.left < 0
-      offset.top  = 0 if offset.top  < 0
-      $elem.css {left:offset.left+$event.webkitMovementX, top:offset.top+$event.webkitMovementY, right:''}
+      pos =
+        left  : $event.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
+        top   : $event.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
 
-      return undefined
-
-
-    scope.selectedWeek = (week) ->
-      tmp = []
-      tmp = ( {weekNo:n, notes:Math.floor(Math.random() * 10)} for n in [1+week.weekNo..52]) if week.weekNo < 52
-      tmp.unshift {weekNo:1, notes:Math.floor(Math.random() * 10)}
-      scope.weekNo = week.weekNo
-      scope.weekNos = tmp
+      $elem.css pos
+      note.position.top  = pos.top
+      note.position.left = pos.left
+      notesService.save note
+      undefined
 
 
-
-
+    scope.selectedWeek = (week) -> updateDropdown weeksService.getList scope.currentYear, week.weekNo
 
 
   console.log 'defined jammerKastenController'
-  return ['$scope', '$templateCache', controller]
+  return ['$scope', 'weeksDisplayService', 'notesService', controller]

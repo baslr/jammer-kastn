@@ -1,8 +1,10 @@
 
 define [  'controllers/jammerKastenController'
+        , 'services/weeksDisplayService'
+        , 'services/notesService'
         , 'angular'
         , 'angular-route' ]
-        , (jammerKasten) ->
+        , (jammerKasten, weeksDisplayService, notesService) ->
   
   demoApp = angular.module 'demoApp', ['ngRoute']
   
@@ -20,9 +22,8 @@ define [  'controllers/jammerKastenController'
   console.log 'setup called'
 
   demoApp.controller 'jammerKastenController', jammerKasten
-  
 
-  
-#  demoApp.service 'testService', testService
+  demoApp.service 'weeksDisplayService', weeksDisplayService
+  demoApp.service 'notesService',        notesService
   
   return demoApp

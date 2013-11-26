@@ -5,6 +5,9 @@ requirejs.config
       deps: ['angular']
     'bootstrap':
       deps: ['jquery']
+
+    'jquery':
+      deps: ['angular']  # load angular bevor jquery to get not the jquery.event
   
   paths:
     'angular'      : '/vendor/js/angular-1-2-2'
@@ -15,7 +18,7 @@ requirejs.config
       
      
 
-require ['app', 'angular', 'templates', 'bootstrap']
+require ['angular', 'app', 'templates', 'bootstrap']
          , () ->
   console.log 'called main.js'
 

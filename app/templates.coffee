@@ -7,9 +7,9 @@ define ['app']
 <div>
   <div class="btn-group">
     <button type="button" class="btn btn-default" data-ng-click="prevWeek()"><span class="glyphicon glyphicon-chevron-left"></span></button>
-    <button data-toggle="dropdown" class="btn btn-default" data-ng-click="showWeeks()">{{ weekNo }} KW {{ yearNo }}</button>
+    <button data-toggle="dropdown" class="btn btn-default" data-ng-click="showWeeks()">{{ currentWeek }} KW {{ currentYear }}</button>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-      <li data-ng-repeat="weekNo in weekNos" data-ng-click="selectedWeek(weekNo)"><a>{{ weekNo.weekNo }} KW <span class="badge">{{ weekNo.notes }}</span></a></li>
+      <li data-ng-repeat="week in weeksDropdown" data-ng-click="selectedWeek(week)"><a>{{ week.weekNo }} KW <span class="badge">{{ week.notes }}</span></a></li>
     </ul>
     <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
@@ -29,9 +29,9 @@ define ['app']
   <a href="#/view2"> view 2</a>
 
   <div id="notesArea">
-    <div class="panel panel-default" data-ng-repeat="note in notes" style="position:absolute; top:50%; right:50%;">
+    <div class="panel panel-default" data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
       <div style="cursor:pointer;" class="panel-heading" data-ng-mouseleave="noteMouseLeave()" data-ng-mouseup="noteMouseUp()" ng-mousemove="noteMouseMove($event, note)" ng-mousedown="noteMouseDown($event, note)">{{note.writer}} | {{note.date}}</div>
-      <div class="panel-body">
+      <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
         {{ note.text }}
         <dl>
         <dt ng-repeat-start="user in note.comments">{{user.name}}</dt>
