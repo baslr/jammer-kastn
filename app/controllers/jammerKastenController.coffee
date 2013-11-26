@@ -88,7 +88,8 @@ define ['jquery']
       offset.left = 0 if offset.left < 0
       offset.top  = 0 if offset.top  < 0
       $elem.css {left:offset.left+$event.webkitMovementX, top:offset.top+$event.webkitMovementY, right:''}
-      ($ $elem).unbind()
+
+      return undefined
 
 
     scope.selectedWeek = (week) ->
