@@ -79,13 +79,16 @@ define ['jquery']
 
 
     scope.noteMouseMove = ($event, note) ->
-      if bMouseDown
-        console.log $event.webkitMovementX
-        console.log $event.webkitMovementY
-        $elem = ($ event.target).parent()
-        offset= $elem.offset()
-        $elem.css {left:offset.left+$event.webkitMovementX, top:offset.top+$event.webkitMovementY, right:''}
-        ($ $elem).unbind()
+      return if not bMouseDown
+
+      console.log $event.webkitMovementX
+      console.log $event.webkitMovementY
+      $elem = ($ event.target).parent()
+      offset= $elem.offset()
+      offset.left = 0 if offset.left < 0
+      offset.top  = 0 if offset.top  < 0
+      $elem.css {left:offset.left+$event.webkitMovementX, top:offset.top+$event.webkitMovementY, right:''}
+      ($ $elem).unbind()
 
 
     scope.selectedWeek = (week) ->

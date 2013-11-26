@@ -7,11 +7,11 @@ requirejs.config
       deps: ['jquery']
   
   paths:
-    'angular'      : '/angular-1-2-2'
-    'angular-route': '/angular-route-1-2-2'
+    'angular'      : '/vendor/js/angular-1-2-2'
+    'angular-route': '/vendor/js/angular-route-1-2-2'
 
-    'jquery'       : '/jquery-2-0-3'
-    'bootstrap'    : '/js/bootstrap'
+    'jquery'       : '/vendor/js/jquery-2-0-3'
+    'bootstrap'    : '/vendor/js/bootstrap'
       
      
 
