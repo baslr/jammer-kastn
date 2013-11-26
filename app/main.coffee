@@ -15,7 +15,7 @@ requirejs.config
       
      
 
-require ['app/app', 'angular', 'templates', 'bootstrap']
+require ['app', 'angular', 'templates', 'bootstrap']
          , () ->
   console.log 'called main.js'
 

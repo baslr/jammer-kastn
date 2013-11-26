@@ -54,8 +54,6 @@ define ['jquery']
 
     setupWeeks new Date()
 
-#    ($ 'DIV#notesArea').append $ templateCache.get 'oneThing'
-
     scope.prevWeek = () ->
       if scope.weekNo is 1
         setupWeeks scope.yearNo-1, 52
