@@ -2,7 +2,7 @@
 define [  'controllers/jammerKastenController'
         , 'angular'
         , 'angular-route' ]
-        , jammerKasten) ->
+        , (jammerKasten) ->
   
   demoApp = angular.module 'demoApp', ['ngRoute']
   
