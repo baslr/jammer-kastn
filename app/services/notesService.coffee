@@ -45,13 +45,16 @@ data = {2013:{1:  [ { position:{left:'200px',top:'10px', 'z-index':1}, writer:'P
                        , {name:'Otto Kay', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ei' } ] }]}
 }
 
-define []
-, () ->
+define ['services/socketService']
+        , () ->
   class notesService
-    constructor: () ->
+    constructor: (@socket) ->
+      console.log 'notesSocket constructor'
+      console.dir  @socket
 
     getNotesForWeek: (year, week) ->
-      data[year][week] if data[year]?[week]?
+      @socket.emit 'get-notes', {year:year, week:week}
+#      data[year][week] if data[year]?[week]?
 
     getNoteCount: (list) ->
       return [] if ! data[list.year]?
@@ -62,7 +65,20 @@ define []
         else ret.push 0
       ret
 
-    save: (noteIn) ->
+    savePosition: (note, pos = {left:'0px',top:'0px'}) ->
+      note.position.left       = pos.left
+      note.position.top        = pos.top
+      note.position['z-index'] = note.position['z-index']
+
+      @save note
+
+
+    save: (note) ->
+      @socket.emit 'set-note', angular.toJson note
+      console.log 'set-note'
+
+      return
+
       for year,n of data
         for week,nn of n
           for note,i in nn

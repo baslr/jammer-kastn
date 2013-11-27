@@ -7,7 +7,7 @@ requirejs.config
       deps: ['jquery']
 
     'jquery':
-      deps: ['angular']  # load angular bevor jquery to get not the jquery.event
+      deps: ['angular']  # load angular bevor jquery to get not the jquery.event in the ng-mouse events
   
   paths:
     'angular'      : '/vendor/js/angular-1-2-2'
@@ -15,6 +15,7 @@ requirejs.config
 
     'jquery'       : '/vendor/js/jquery-2-0-3'
     'bootstrap'    : '/vendor/js/bootstrap'
+    'socketIO'     : '/vendor/js/socket.io-0-9-16'
       
      
 

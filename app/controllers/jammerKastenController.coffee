@@ -1,20 +1,29 @@
 
 define ['jquery']
         , ($) ->
+  angularModule = [  '$scope'
+                   , 'weeksDisplayService'
+                   , 'notesService'
+                   , 'socketService' ]
 
-  controller = (scope, weeksService, notesService) ->
+  angularModule.push (scope, weeksService, notesService, socketService) ->
     console.log 'called jammerKastenController'
 
     updateDropdown = (list) ->
       scope.currentWeek = list.week
       scope.currentYear = list.year
-      notes = notesService.getNoteCount list
-      scope.weeksDropdown = weeksService.generateDropdown list, notes
-      scope.notes = notesService.getNotesForWeek scope.currentYear, scope.currentWeek
+      scope.weeksDropdown = weeksService.generateDropdown list, notesService.getNoteCount list
+      scope.notes = []
+      notesService.getNotesForWeek scope.currentYear, scope.currentWeek
+
+    socketService.on 'set-notes', (notes) ->
+      scope.notes   = notes
 
     scope.currentYear = new Date().getFullYear()
     scope.currentWeek = weeksService.getCurrentWeek()
-    scope.notes       = notesService.getNotesForWeek scope.currentYear, scope.currentWeek
+    scope.notes       = []
+
+    notesService.getNotesForWeek scope.currentYear, scope.currentWeek
 
     updateDropdown weeksService.getList scope.currentYear, scope.currentWeek
 
@@ -42,25 +51,24 @@ define ['jquery']
       undefined
 
 
-
     scope.noteMouseMove = ($event, note) ->
       return if not bMouseDown
 
       $elem = ($ event.target).parent()
       offset= $elem.offset()
       pos =
-        left  : $event.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
-        top   : $event.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
+        left : $event.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
+        top  : $event.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
 
       $elem.css pos
-      note.position.top  = pos.top
-      note.position.left = pos.left
-      notesService.save note
+      notesService.savePosition note, pos
       undefined
 
 
     scope.selectedWeek = (week) -> updateDropdown weeksService.getList scope.currentYear, week.weekNo
 
+    socketService.on 'msg', (msg) ->
+      console.dir msg
 
   console.log 'defined jammerKastenController'
-  return ['$scope', 'weeksDisplayService', 'notesService', controller]
+  return angularModule
