@@ -10,8 +10,11 @@ io.sockets.on 'connection', (socket) ->
   socket.emit 'msg', 'batz'
 
   socket.on 'get-notes', (obj) ->
+    console.log 'socket.on:get-notes'
+    console.dir obj
     if data[obj.year]?[obj.week]?
       socket.emit 'set-notes', data[obj.year][obj.week]
+      console.log 'socket.emit:set-notes'
 
   socket.on 'set-note', (noteIn) ->
     console.log 'socket.on set-note'

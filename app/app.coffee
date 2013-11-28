@@ -3,38 +3,40 @@ define [  'controllers/jammerKastenController'
         , 'services/weeksDisplayService'
         , 'services/notesService'
         , 'services/socketService'
+        , 'directives/noteMoveDirective'
         , 'angular'
         , 'angular-route' ]
-        , (jammerKasten, weeksDisplayService, notesService, socketService) ->
+        , (jammerKasten, weeksDisplayService, notesService, socketService, noteMoveDirective) ->
   
   demoApp = angular.module 'demoApp', ['ngRoute']
 
   demoApp.provider 'socketService', () ->
     conf = {port:4433, hostname:'0.0.0.0', protocol:'https'}
     return {
-      $get : [ '$rootScope', (rootScope) -> new socketService rootScope, conf ]
+      $get : [ '$rootScope', '$timeout', (rootScope, timeout) ->
+        new socketService rootScope, timeout, conf ]
       set  : (confIn) -> conf = confIn
     }
   
   demoApp.config ['$routeProvider', '$locationProvider', 'socketServiceProvider', (route, locationProvider, socketServiceProvider) ->
     locationProvider.html5Mode true
-    route.when '/view1',
+    route.when '/',
       controller  : 'jammerKastenController'
       templateUrl : 'view1.html'
     
-    route.otherwise redirectTo: '/view1'
+    route.otherwise redirectTo: '/'
 
     socketServiceProvider.set {port:3344, hostname:'127.0.0.1', protocol:'http'}
   ]
   
-  demoApp.run ->
-    console.log 'demoApp.run:test'
-  
-  console.log 'setup called'
+  demoApp.run -> console.log 'demoApp.run:test'
 
   demoApp.controller 'jammerKastenController', jammerKasten
 
   demoApp.service 'weeksDisplayService', weeksDisplayService
   demoApp.service 'notesService',        ['socketService', notesService]
-  
+
+  demoApp.directive 'noteMove', noteMoveDirective
+
+  console.log 'defined app'
   return demoApp

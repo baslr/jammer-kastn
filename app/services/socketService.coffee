@@ -1,26 +1,47 @@
-define ['socketIO']
+define ['socketIO', 'angular']
        , () ->
   class socketService
-    constructor: (@rootScope, conf) ->
+    constructor: (@rootScope, @timeout, conf) ->
       console.log 'socketService constructor called'
       console.log conf
-      @socket = socket = io.connect "#{conf.protocol}://#{conf.hostname}:#{conf.port}"
+      @socket = io.connect "#{conf.protocol}://#{conf.hostname}:#{conf.port}"
 
       @socket.on 'connect', () ->
         console.log 'socketIO:connect'
 
-    on: (eventName, callback) ->
-      @socket.on eventName, () =>
+    asyncCall: (cb) ->
+      return () =>
         args = arguments
-        @rootScope.$apply =>
-          callback.apply @socket, args
+        @timeout () =>
+          cb.apply @socket, args
+        , 0
 
-    emit: (eventName, data, callback) ->
-      console.log 'socketService:emit'
-      @socket.emit eventName, data, () =>
-        args = arguments
-        @rootScope.$apply =>
-          callback.apply @socket, args if callback?
+
+    on: (eventName, cb) ->
+      console.log "socket:#{eventName}"
+      @socket.on eventName, @asyncCall cb
+
+
+    emit: (eventName, data, cb) ->
+      dataIn = data
+      dataIn = JSON.parse angular.toJson data if typeof data is 'object'
+      console.log "socketService:emit:#{eventName}"
+      if cb? then @socket.emit eventName, dataIn, @asyncCall cb
+      else        @socket.emit eventName, dataIn
+
+
+    forward: (events, scope) ->
+      events = [events]   if   events instanceof Array is false
+      scope  = @rootScope if ! scope?
+
+      events.forEach (eventName) =>
+        eName = eventName
+        forwardEvent = @asyncCall (data) ->
+            scope.$broadcast eName, data
+        scope.$on '$destroy', () =>
+          @socket.removeListener eName, forwardEvent
+        @socket.on eName, forwardEvent
+
 
   console.log 'defined socketService'
   socketService

@@ -29,8 +29,8 @@ define ['app']
   <a href="#/view2"> view 2</a>
 
   <div id="notesArea">
-    <div class="panel panel-default" data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
-      <div style="cursor:pointer;" class="panel-heading" data-ng-mouseleave="noteMouseLeave()" data-ng-mouseup="noteMouseUp()" ng-mousemove="noteMouseMove($event, note)" ng-mousedown="noteMouseDown($event, note)">{{note.writer}} | {{note.date}}</div>
+    <div class="panel panel-default" data-note-move data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
+      <div style="cursor:pointer;" class="panel-heading">{{note.writer}} | {{note.date}}</div>
       <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
         {{ note.text }}
         <dl>
