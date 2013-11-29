@@ -5,6 +5,13 @@ data = require './data.json'
 
 console.dir data
 
+getNote = (id) ->
+  for year,n of data
+    for week,nn of n
+      for note,i in nn
+        return data[year][week][i] if note.id is id
+
+
 io.sockets.on 'connection', (socket) ->
   console.log "SOCK -> CON #{socket.handshake.address.address}"
   socket.emit 'msg', 'batz'
@@ -16,14 +23,20 @@ io.sockets.on 'connection', (socket) ->
       socket.emit 'set-notes', data[obj.year][obj.week]
       console.log 'socket.emit:set-notes'
 
-  socket.on 'set-note', (noteIn) ->
-    console.log 'socket.on set-note'
-    noteIn = JSON.parse noteIn if typeof noteIn is 'string'
+  socket.on 'set-position', (data) ->
+    console.log '.on set-position'
+    note = getNote data.id
+    if note?
+      note.position.left = data.pos.left
+      note.position.top  = data.pos.top
 
-    for year,n of data
-      for week,nn of n
-        for note,i in nn
-          data[year][week][i] = noteIn if note.id is noteIn.id
+  socket.on 'set-index', (data) ->
+    console.log '.on set-index'
+    note = getNote data.id
+    if note?
+      note.position['z-index'] = data.index
+
+
 
 
 

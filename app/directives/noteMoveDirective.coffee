@@ -3,8 +3,6 @@ define ['jquery']
         , ($) ->
 
   directive = (notesService) ->
-    bMouseDown = false
-
     return {
 
     link: (scope, element, attrs) ->
@@ -13,12 +11,23 @@ define ['jquery']
       elem = ($ element[0]).find('DIV:first')
       paps = ($ elem).parent()
 
-      elem.on 'mouseup mouseleave',  () -> bMouseDown = false
+      mouseMove = (e) ->
+        e.preventDefault()
+        offset= paps.offset()
+        pos =
+          left : e.originalEvent.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
+          top  : e.originalEvent.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
+        paps.css pos
+        notesService.setPosition scope.note.id, pos
+
+      mouseUp = () ->
+        ($ document).unbind 'mousemove', mouseMove
+        ($ document).unbind 'mouseup',    mouseUp
+
       elem.on 'mousedown', (e) ->
         return if e.which isnt 1
         e.preventDefault()
 
-        bMouseDown = true
         z = 1
         ($ 'DIV#notesArea .panel').each ->
           idx = ($ this).css 'z-index'
@@ -26,16 +35,10 @@ define ['jquery']
         ($ e.target).parent().css 'z-index', ++z
 
         scope.note.position['z-index'] = z
-        notesService.save scope.note
+        notesService.setIndex scope.note.id, z
 
-      elem.on 'mousemove', (e) ->
-        return if not bMouseDown
-        offset= paps.offset()
-        pos =
-          left : e.originalEvent.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
-          top  : e.originalEvent.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
-        paps.css pos
-        notesService.savePosition scope.note, pos
+        ($ document).on 'mousemove', mouseMove
+        ($ document).on 'mouseup',   mouseUp
 
       console.dir scope
       console.dir element

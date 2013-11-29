@@ -65,12 +65,11 @@ define ['services/socketService']
         else ret.push 0
       ret
 
-    savePosition: (note, pos = {left:'0px',top:'0px'}) ->
-      note.position.left       = pos.left
-      note.position.top        = pos.top
-      note.position['z-index'] = note.position['z-index']
+    setPosition: (noteId, pos = {left:'0px',top:'0px'}) ->
+      @socket.emit 'set-position', {id:noteId, pos:pos}
 
-      @save note
+    setIndex: (noteId, index) ->
+      @socket.emit 'set-index', {id:noteId, index:index}
 
 
     save: (note) -> @socket.emit 'set-note', angular.toJson note
