@@ -14,7 +14,7 @@ define ['app']
     <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
 
-  <h2>view1</h2>
+<!--  <h2>view1</h2>
   
   Name:<br />
   <form name="testForm" ng-submit="add()">
@@ -26,7 +26,7 @@ define ['app']
     <li ng-repeat="cust in customers"> {{ cust.name }}
   </ul>
 
-  <a href="#/view2"> view 2</a>
+  <a href="#/view2"> view 2</a> -->
 
   <div id="notesArea">
     <div class="panel panel-default" data-note-move data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">

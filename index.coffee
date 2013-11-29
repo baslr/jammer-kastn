@@ -11,6 +11,18 @@ getNote = (id) ->
       for note,i in nn
         return data[year][week][i] if note.id is id
 
+getNotesForWeek = (year, week) -> data[year][week] if data[year]?[week]?
+
+getCurrentWeek = (d = new Date()) ->
+    date = new Date d
+    date.setHours(0,0,0)
+    date.setDate(date.getDate() + 4 - (d.getDay() || 7))
+    yearStart = new Date d.getFullYear(), 0, 1
+    return Math.ceil(( ( (date - yearStart) / 86400000) + 1)/7)
+
+getMaxWeek = (d= new Date("#{new Date().getFullYear()}-12-31")) ->
+    return getCurrentWeek d
+
 
 io.sockets.on 'connection', (socket) ->
   console.log "SOCK -> CON #{socket.handshake.address.address}"
@@ -35,6 +47,24 @@ io.sockets.on 'connection', (socket) ->
     note = getNote data.id
     if note?
       note.position['z-index'] = data.index
+
+  socket.on 'get-dropdown', (data) ->
+    console.log '.on get-dropdown'
+    console.dir  data
+    week = data.week
+    year = data.year
+    maxWeek = getMaxWeek new Date "#{year}-12-31"
+    tmp  = []
+
+    tmp.push n for n in [1+week..maxWeek] if week < maxWeek
+    tmp.unshift 1 if week isnt 1
+
+    dropDown = for week,i in tmp
+      notes = getNotesForWeek year, week
+
+      {weekNo:week, notes:if notes? then notes.length else 0}
+
+    socket.emit 'set-dropdown', dropDown
 
 
 

@@ -1,12 +1,12 @@
 
 define [  'controllers/jammerKastenController'
-        , 'services/weeksDisplayService'
+        , 'services/weeksService'
         , 'services/notesService'
         , 'services/socketService'
         , 'directives/noteMoveDirective'
         , 'angular'
         , 'angular-route' ]
-        , (jammerKasten, weeksDisplayService, notesService, socketService, noteMoveDirective) ->
+        , (jammerKasten, weeksService, notesService, socketService, noteMoveDirective) ->
   
   demoApp = angular.module 'demoApp', ['ngRoute']
 
@@ -29,12 +29,18 @@ define [  'controllers/jammerKastenController'
     socketServiceProvider.set {port:3344, hostname:'127.0.0.1', protocol:'http'}
   ]
   
-  demoApp.run -> console.log 'demoApp.run:test'
+  demoApp.run -> ['$rootScope', 'templateCache', (rootScope, templateCache) ->
+      console.log 'demoApp.run:test'
+      rootScope.$on '$viewContentLoaded', () ->
+        console.log '.on $viewContentLoaded'
+        templateCache.removeAll()
+  ]
+
 
   demoApp.controller 'jammerKastenController', jammerKasten
 
-  demoApp.service 'weeksDisplayService', weeksDisplayService
-  demoApp.service 'notesService',        ['socketService', notesService]
+  demoApp.service 'weeksService', weeksService
+  demoApp.service 'notesService', notesService
 
   demoApp.directive 'noteMove', noteMoveDirective
 

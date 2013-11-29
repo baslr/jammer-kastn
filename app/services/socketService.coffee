@@ -14,6 +14,7 @@ define ['socketIO', 'angular']
         args = arguments
         @timeout () =>
           cb.apply @socket, args
+          null
         , 0
 
 

@@ -5,11 +5,8 @@ define ['jquery']
   directive = (notesService) ->
     return {
 
-    link: (scope, element, attrs) ->
-      element.on '$destroy', () -> elem.unbind()
-
-      elem = ($ element[0]).find('DIV:first')
-      paps = ($ elem).parent()
+    link: (scope, paps, attrs) ->
+      elem = ($ paps[0]).find('DIV:first')
 
       mouseMove = (e) ->
         e.preventDefault()
@@ -17,14 +14,15 @@ define ['jquery']
         pos =
           left : e.originalEvent.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
           top  : e.originalEvent.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
-        paps.css pos
+
         notesService.setPosition scope.note.id, pos
+        paps.css pos
 
       mouseUp = () ->
-        ($ document).unbind 'mousemove', mouseMove
-        ($ document).unbind 'mouseup',    mouseUp
+        ($ document).off 'mousemove', mouseMove
+        ($ document).off 'mouseup',   mouseUp
 
-      elem.on 'mousedown', (e) ->
+      mouseDown = (e) ->
         return if e.which isnt 1
         e.preventDefault()
 
@@ -32,17 +30,24 @@ define ['jquery']
         ($ 'DIV#notesArea .panel').each ->
           idx = ($ this).css 'z-index'
           z = idx if idx isnt 'auto' and z < idx
-        ($ e.target).parent().css 'z-index', ++z
+        paps.css 'z-index', ++z
 
-        scope.note.position['z-index'] = z
         notesService.setIndex scope.note.id, z
 
         ($ document).on 'mousemove', mouseMove
         ($ document).on 'mouseup',   mouseUp
 
-      console.dir scope
-      console.dir element
-      console.dir attrs
+      paps.on '$destroy', () ->
+        console.log 'paps.on $destroy'
+        elem.off 'mousedown', mouseDown
+        mouseUp()
+        elem = null
+        paps = null
+
+      scope.$on '$destroy', () -> console.log 'scope.on $destroy'
+
+      elem.on 'mousedown', mouseDown
+      null
     }
 
   console.log 'defined noteMoveDirective'

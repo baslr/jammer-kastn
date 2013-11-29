@@ -2,38 +2,42 @@
 define ['jquery']
         , ($) ->
   angularModule = [  '$scope'
-                   , 'weeksDisplayService'
+                   , 'weeksService'
                    , 'notesService'
                    , 'socketService' ]
 
   angularModule.push (scope, weeksService, notesService, socketService) ->
     console.log 'called jammerKastenController'
 
-    updateDropdown = (list) ->
-      scope.currentWeek = list.week
-      scope.currentYear = list.year
-      scope.weeksDropdown = weeksService.generateDropdown list, notesService.getNoteCount list
-      scope.notes = []
-      notesService.getNotesForWeek scope.currentYear, scope.currentWeek
+    socketService.forward ['set-notes', 'set-note-list', 'set-dropdown', 'msg'], scope
 
-    socketService.forward ['set-notes', 'msg'], scope
 
-    scope.$on 'set-notes', (e, notes) -> scope.notes = notes
+    scope.$on 'set-notes',     (e, notes) -> scope.notes         = notes
+    scope.$on 'set-dropdown',  (e, list)  -> scope.weeksDropdown = list
+    scope.$on 'set-year-week', (e, data)  ->
+        scope.currentWeek = data.week
+        scope.currentYear = data.year
+
 
     scope.currentYear = new Date().getFullYear()
     scope.currentWeek = weeksService.getCurrentWeek()
     scope.notes       = []
 
-    notesService.getNotesForWeek scope.currentYear, scope.currentWeek
+    notesService.requestNotesAndDropDown scope, scope.currentYear, scope.currentWeek
 
-    updateDropdown weeksService.getList scope.currentYear, scope.currentWeek
+    scope.prevWeek = () ->
+      scope.notes = []
+      notesService.requestNotesAndDropDown scope, scope.currentYear, scope.currentWeek-1
+    scope.nextWeek = () ->
+      scope.notes = []
+      notesService.requestNotesAndDropDown scope, scope.currentYear, scope.currentWeek+1
 
-    scope.prevWeek = () -> updateDropdown weeksService.getList scope.currentYear, scope.currentWeek-1
-    scope.nextWeek = () -> updateDropdown weeksService.getList scope.currentYear, scope.currentWeek+1
-
-    scope.selectedWeek = (week) -> updateDropdown weeksService.getList scope.currentYear, week.weekNo
+    scope.selectedWeek = (week) ->
+      scope.notes = []
+      notesService.requestNotesAndDropDown scope, scope.currentYear, week.weekNo
 
     scope.$on 'msg', (e, msg) -> console.dir msg
+    undefined
 
   console.log 'defined jammerKastenController'
   return angularModule
