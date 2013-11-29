@@ -23,11 +23,8 @@ io.sockets.on 'connection', (socket) ->
     for year,n of data
       for week,nn of n
         for note,i in nn
-          if note.date   is noteIn.date   and
-             note.writer is noteIn.writer and
-             note.text   is noteIn.text
-               console.log 'set-note'
-               data[year][week][i] = noteIn
+          data[year][week][i] = noteIn if note.id is noteIn.id
+
 
 
 setInterval () ->

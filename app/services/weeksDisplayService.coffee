@@ -48,10 +48,5 @@ define []
 
 
 
-
-
-
-
-
   console.log 'defined weeksDisplayService'
   weeksDisplayService

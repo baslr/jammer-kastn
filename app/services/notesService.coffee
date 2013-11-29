@@ -73,19 +73,7 @@ define ['services/socketService']
       @save note
 
 
-    save: (note) ->
-      @socket.emit 'set-note', angular.toJson note
-      console.log 'set-note'
-
-      return
-
-      for year,n of data
-        for week,nn of n
-          for note,i in nn
-            if note.date   is noteIn.date  and
-               note.writer is noteIn.write and
-               note.text   is noteIn.text
-              data[year][week][i] = noteIn
+    save: (note) -> @socket.emit 'set-note', angular.toJson note
 
 
   console.log 'defined notesService'

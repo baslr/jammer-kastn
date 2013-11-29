@@ -18,7 +18,7 @@ define ['socketIO', 'angular']
 
 
     on: (eventName, cb) ->
-      console.log "socket:#{eventName}"
+      console.log "socketService:on:#{eventName}"
       @socket.on eventName, @asyncCall cb
 
 
