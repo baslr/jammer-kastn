@@ -13,29 +13,19 @@ define ['app']
     </ul>
     <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
-
-<!--  <h2>view1</h2>
   
-  Name:<br />
-  <form name="testForm" ng-submit="add()">
-    <input type="text" ng-model="name" /><br />
-    <input type="submit" value="add" />
-  </form>
-
-  <ul>
-    <li ng-repeat="cust in customers"> {{ cust.name }}
-  </ul>
-
-  <a href="#/view2"> view 2</a> -->
+  <button type="button" class="btn btn-default pull-right" data-ng-click="newNote()"><span class="glyphicon glyphicon-plus"></span></button>
 
   <div id="notesArea">
     <div class="panel panel-default" data-note-move data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
-      <div style="cursor:pointer;" class="panel-heading">{{note.writer}} | {{note.date}}</div>
-      <div class="panel-body" style="max-height: 500px;overflow-y: scroll;">
+      <div style="cursor:pointer;" data-ng-style="note.style" class="panel-heading">{{note.writer}} | {{note.date}}</div>
+      <div class="panel-body">
         {{ note.text }}
-        <dl>
-        <dt ng-repeat-start="user in note.comments">{{user.name}}</dt>
-        <dd ng-repeat-end>{{ user.comment }}</dd>
+        <p><center>{{ note.comments.length }} Kommentare</center></p>
+        <dl style="max-height: 200px; overflow-y: scroll;">
+          <dt ng-repeat-start="user in note.comments" data-ng-style="user.style" style="padding-left:10px;">{{user.name}}</dt>
+          <dd ng-repeat-end>{{ user.comment }}</dd>
+        </dl>
       </div>
     </div>
   </div>

@@ -29,3 +29,7 @@ a {
     max-width: 300px;
     min-width: 200px;
 }
+
+BUTTON.btn SPAN.glyphicon {
+  cursor: pointer;
+}

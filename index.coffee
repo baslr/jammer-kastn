@@ -1,9 +1,24 @@
-fs = require 'fs'
-io = require('socket.io').listen 3344
 
+fs         = require 'fs'
+http       = require 'http'
+nodeStatic = require 'node-static'
+webServer  = undefined
+staticS    = new nodeStatic.Server ".", {cache: 0 }
+
+webServer  = http.createServer()
+webServer.listen 3344, '0.0.0.0'
+
+
+webServer.on 'error', (e) ->
+  console.error "webServer error:"
+  console.dir    e
+
+webServer.on 'request', (req, res) ->      
+  if -1 is req.url.search '/socket.io/1'                                 # request to us
+    staticS.serve req, res                                                    # we only serve files, all other stuff via websockets
+
+io   = require('socket.io').listen webServer
 data = require './data.json'
-
-console.dir data
 
 getNote = (id) ->
   for year,n of data
@@ -65,8 +80,6 @@ io.sockets.on 'connection', (socket) ->
       {weekNo:week, notes:if notes? then notes.length else 0}
 
     socket.emit 'set-dropdown', dropDown
-
-
 
 
 
