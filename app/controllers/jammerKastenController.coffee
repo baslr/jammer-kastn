@@ -38,7 +38,7 @@ define ['jquery']
     modal = (opts) ->
       defaultOpts = {focus:'INPUT:first'}
       opts = angular.extend {}, defaultOpts, opts
-      html = ($ templateCache.get 'modalCreateNote')
+      html = ($ templateCache.get opts.template)
       deferred  = q.defer()
       noteScope = scope.$new true
 
@@ -73,7 +73,7 @@ define ['jquery']
         html.val ''
         return {text:text, caption:cap}
 
-      modal({ok:modalOk}).then (obj) ->
+      modal({ok:modalOk, template:'modalCreateNote'}).then (obj) ->
         notesService.addNote {note:obj, week:scope.currentWeek, year:scope.currentYear}
 
 

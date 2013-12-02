@@ -18,7 +18,10 @@ define ['app']
 
   <div id="notesArea">
     <div class="panel panel-default" data-note-move data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
-      <div style="cursor:pointer;" data-ng-style="note.style" class="panel-heading">{{note.writer}} | {{note.date}}</div>
+      <div style="cursor:pointer;" data-ng-style="note.style" class="panel-heading">
+        {{note.writer}} | {{note.date}}
+        <p>{{ note.caption }}</p>
+      </div>
       <div class="panel-body">
         {{ note.text }}
         <p><center>{{ note.comments.length }} Kommentare</center></p>
