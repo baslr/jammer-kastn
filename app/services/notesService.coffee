@@ -38,6 +38,8 @@ define ['services/socketService',
     setIndex: (noteId, index) ->
       @socket.emit 'set-index', {id:noteId, index:index}
 
+    addNote: (note) -> @socket.emit 'add-note', note
+
 
   console.log 'defined notesService'
   return ['socketService', 'weeksService', notesService]

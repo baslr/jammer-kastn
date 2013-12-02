@@ -14,7 +14,7 @@ define ['app']
     <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
   
-  <button type="button" class="btn btn-default pull-right" data-ng-click="newNote()"><span class="glyphicon glyphicon-plus"></span></button>
+  <button type="button" class="btn btn-default pull-right" data-ng-click="openCreateNote()"><span class="glyphicon glyphicon-plus"></span></button>
 
   <div id="notesArea">
     <div class="panel panel-default" data-note-move data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
@@ -31,34 +31,26 @@ define ['app']
   </div>
 </div>
 """
-    templateCache.put 'view2.html', """
-<h2>view 2</h2>
-
-<ul>
-  <li ng-repeat="bar in bars"> {{ bar }}
-</ul>
-
-<a href="#view1">back </a>"""
-
-    templateCache.put 'oneThing', """
-<div class="panel panel-default">
-  <div class="panel-heading">Peter Paul | vor zwei Tagen</div>
-  <div class="panel-body">
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-  <dl>
-    <dt>Hans Müller</dt>
-    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
-    <dt>Wolfgang Bär</dt>
-    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
-    <dt>Tina Lischen</dt>
-    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
-    <dt>Ulf Paul</dt>
-    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
-    <dt>Paul Laufland</dt>
-    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
-    <dt>Otto Kay</dt>
-    <dd>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat</dd>
-  </dl>
+    templateCache.put 'modalCreateNote', """
+<div class="modal fade" id="modalCreateNote" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Neue Notiz</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input    class="form-control" type="text" placeholder="Überschrift">
+        </div>
+        <div clasl="form-group">
+          <textarea class="form-control" rows="5"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-ng-click="cancel()">Abbrechen</button>
+        <button type="button" class="btn btn-primary" data-ng-click="ok()" data-dismiss="modal">Erstellen</button>
+      </div>
+    </div>
   </div>
 </div>
 """

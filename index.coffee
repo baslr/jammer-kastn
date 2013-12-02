@@ -1,6 +1,7 @@
 
 fs         = require 'fs'
 http       = require 'http'
+crypto     = require 'crypto'
 nodeStatic = require 'node-static'
 webServer  = undefined
 staticS    = new nodeStatic.Server ".", {cache: 0 }
@@ -18,6 +19,7 @@ webServer.on 'request', (req, res) ->
     staticS.serve req, res                                                    # we only serve files, all other stuff via websockets
 
 io   = require('socket.io').listen webServer
+io.set 'log level', 1
 data = require './data.json'
 
 getNote = (id) ->
@@ -45,10 +47,10 @@ io.sockets.on 'connection', (socket) ->
 
   socket.on 'get-notes', (obj) ->
     console.log 'socket.on:get-notes'
-    console.dir obj
-    if data[obj.year]?[obj.week]?
-      socket.emit 'set-notes', data[obj.year][obj.week]
-      console.log 'socket.emit:set-notes'
+    socket.emit 'reset-notes', () ->
+    console.log 'emitted reset-notes'
+    socket.emit 'add-note', note for note in data[obj.year][obj.week] if data[obj.year]?[obj.week]?
+    console.log 'socket.emit:set-note'
 
   socket.on 'set-position', (data) ->
     console.log '.on set-position'
@@ -81,6 +83,27 @@ io.sockets.on 'connection', (socket) ->
 
     socket.emit 'set-dropdown', dropDown
 
+  socket.on 'add-note', (note) ->
+    year = note.year
+    week = note.week
+    note = note.note
+    data[year] = {}       if !data[year]?
+    data[year][week] = [] if !data[year][week]?
+    date = new Date()
+    date = "#{date.getFullYear()}-#{date.getMonth()+1}-#{date.getDate()}"
+
+    note.id     = crypto.randomBytes(4).toString 'hex'
+    note.writer = 'Elbert N. Stearns'
+    note.date   = date
+    note.position = {left:'200px', top:'10px', 'z-index':1}
+    note.comments = []
+
+    data[year][week].push note
+
+    io.sockets.emit 'add-note', note
+
+    console.dir note
+
 
 
 setInterval () ->
@@ -92,6 +115,11 @@ setInterval () ->
 data = {2013:{1:  [ { position:{left:'200px',top:'10px', 'z-index':1}, writer:'Peter Paul'
 , date:'vor zwei Tagen'
 , text: 'ed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.'
+
+
+
+
+
 , comments:[  {name:'Hans Müller', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy' }
   , {name:'Wolfgang Bär', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }
   , {name:'Tina Lischen', comment:'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonum' }

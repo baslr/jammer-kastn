@@ -33,3 +33,7 @@ a {
 BUTTON.btn SPAN.glyphicon {
   cursor: pointer;
 }
+
+TEXTAREA, INPUT {
+    cursor: text;
+}
