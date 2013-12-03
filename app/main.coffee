@@ -11,7 +11,8 @@ requirejs.config
   
   paths:
     'angular'      : '/vendor/js/angular-1-2-3'
-    'angular-route': '/vendor/js/angular-route-1-2-3'
+    'angular-route'    : '/vendor/js/angular-route-1-2-3'
+    'angular-sanitize' : '/vendor/js/angular-sanitize-1-2-3'
 
     'jquery'       : '/vendor/js/jquery-2-0-3'
     'bootstrap'    : '/vendor/js/bootstrap-3-0-2'

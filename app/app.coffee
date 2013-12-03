@@ -4,11 +4,13 @@ define [  'controllers/jammerKastenController'
         , 'services/notesService'
         , 'services/socketService'
         , 'directives/noteMoveDirective'
+        , 'filters/wikipediaUrlFilter'
         , 'angular'
-        , 'angular-route' ]
-        , (jammerKasten, weeksService, notesService, socketService, noteMoveDirective) ->
+        , 'angular-route'
+        , 'angular-sanitize']
+        , (jammerKasten, weeksService, notesService, socketService, noteMoveDirective, wikipediaUrlFilter) ->
   
-  demoApp = angular.module 'demoApp', ['ngRoute']
+  demoApp = angular.module 'demoApp', ['ngRoute', 'ngSanitize']
 
   demoApp.provider 'socketService', () ->
     conf = {port:4433, hostname:'0.0.0.0', protocol:'https'}
@@ -42,7 +44,8 @@ define [  'controllers/jammerKastenController'
   demoApp.service 'weeksService', weeksService
   demoApp.service 'notesService', notesService
 
-  demoApp.directive 'noteMove', noteMoveDirective
+  demoApp.directive 'noteMove',     noteMoveDirective
+  demoApp.filter    'wikipediaUrl', wikipediaUrlFilter
 
   console.log 'defined app'
   return demoApp

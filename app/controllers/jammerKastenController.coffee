@@ -5,11 +5,12 @@ define ['jquery']
                    , '$compile'
                    , '$templateCache'
                    , '$q'
+                   , '$filter'
                    , 'weeksService'
                    , 'notesService'
                    , 'socketService' ]
 
-  angularModule.push (scope, compile, templateCache, q, weeksService, notesService, socketService) ->
+  angularModule.push (scope, compile, templateCache, q, filter, weeksService, notesService, socketService) ->
     console.log 'called jammerKastenController'
 
     socketService.forward ['reset-notes', 'add-note', 'set-dropdown', 'msg'], scope
@@ -76,6 +77,11 @@ define ['jquery']
       modal({ok:modalOk, template:'modalCreateNote'}).then (obj) ->
         notesService.addNote {note:obj, week:scope.currentWeek, year:scope.currentYear}
 
+    scope.showHideNote = (note) ->
+      if ! note.hide? then note.hide = true
+      else                 note.hide = ! note.hide
+
+      notesService.setHideStatus note
 
 
     undefined

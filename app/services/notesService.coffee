@@ -38,7 +38,8 @@ define ['services/socketService',
     setIndex: (noteId, index) ->
       @socket.emit 'set-index', {id:noteId, index:index}
 
-    addNote: (note) -> @socket.emit 'add-note', note
+    addNote:       (note) -> @socket.emit 'add-note', note
+    setHideStatus: (note) -> @socket.emit 'set-hide-status', {id:note.id,hide:note.hide}
 
 
   console.log 'defined notesService'

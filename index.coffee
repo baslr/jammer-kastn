@@ -40,6 +40,23 @@ getCurrentWeek = (d = new Date()) ->
 getMaxWeek = (d= new Date("#{new Date().getFullYear()}-12-31")) ->
     return getCurrentWeek d
 
+getParsedNoteText = (origTxt) ->
+  workTxt = origTxt.slice()
+  pat     = /[^\ ]+\.wikipedia\.org\/[^\ ]+/g
+
+  while test = pat.exec workTxt
+    wikiLink = plainWikiLink = workTxt.substr test.index, test[0].length
+
+    if -1 is plainWikiLink.search /^https?:\/\//
+      wikiLink = 'https://'+wikiLink
+
+    else if 0 is plainWikiLink.search /^http:\/\//
+      wikiLink = 'https'+ plainWikiLink.slice 4
+
+    origTxt = origTxt.replace plainWikiLink, "<a href=\"#{wikiLink}\" target=\"_blank\">#{decodeURIComponent wikiLink}</a>"
+
+  return origTxt
+
 
 io.sockets.on 'connection', (socket) ->
   console.log "SOCK -> CON #{socket.handshake.address.address}"
@@ -104,7 +121,10 @@ io.sockets.on 'connection', (socket) ->
 
     console.dir note
 
-
+  socket.on 'set-hide-status', (noteIn) ->
+    console.log 'set-hide-status'
+    console.dir  noteIn
+    getNote(noteIn.id).hide = noteIn.hide
 
 setInterval () ->
   fs.writeFileSync 'data.json', JSON.stringify data
