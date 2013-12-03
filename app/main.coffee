@@ -3,6 +3,8 @@ requirejs.config
   shim:
     'angular-route':
       deps: ['angular']
+    'angular-sanitize':
+      deps: ['angular']
     'bootstrap':
       deps: ['jquery']
 
