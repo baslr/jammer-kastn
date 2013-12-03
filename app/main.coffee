@@ -19,6 +19,7 @@ requirejs.config
     'jquery'       : '/vendor/js/jquery-2-0-3'
     'bootstrap'    : '/vendor/js/bootstrap-3-0-2'
     'socketIO'     : '/vendor/js/socket.io-0-9-16'
+    'safari-reader': '/vendor/js/safari-reader'
       
      
 

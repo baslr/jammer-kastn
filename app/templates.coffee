@@ -13,7 +13,8 @@ define ['app']
     </ul>
     <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
-  
+
+  <button data-ng-click="testReader()">test Reader</button>
   <button type="button" class="btn btn-default pull-right" data-ng-click="openCreateNote()"><span class="glyphicon glyphicon-plus"></span></button>
 
   <div id="notesArea">
