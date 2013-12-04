@@ -1,25 +1,14 @@
 
-define [  'controllers/jammerKastenController'
-        , 'services/weeksService'
-        , 'services/notesService'
-        , 'services/socketService'
+define [  'services/socketService'
         , 'directives/noteMoveDirective'
         , 'filters/wikipediaUrlFilter'
         , 'angular'
         , 'angular-route'
         , 'angular-sanitize']
-        , (jammerKasten, weeksService, notesService, socketService, noteMoveDirective, wikipediaUrlFilter) ->
+        , (socketService, noteMoveDirective, wikipediaUrlFilter) ->
   
-  demoApp = angular.module 'demoApp', ['ngRoute', 'ngSanitize']
+  demoApp = angular.module 'demoApp', ['ngRoute', 'ngSanitize', 'socketServiceModule']
 
-  demoApp.provider 'socketService', () ->
-    conf = {port:4433, hostname:'0.0.0.0', protocol:'https'}
-    return {
-      $get : [ '$rootScope', '$timeout', (rootScope, timeout) ->
-        new socketService rootScope, timeout, conf ]
-      set  : (confIn) -> conf = confIn
-    }
-  
   demoApp.config ['$routeProvider', '$locationProvider', 'socketServiceProvider', (route, locationProvider, socketServiceProvider) ->
     locationProvider.html5Mode true
     route.when '/',
@@ -39,10 +28,6 @@ define [  'controllers/jammerKastenController'
   ]
 
 
-  demoApp.controller 'jammerKastenController', jammerKasten
-
-  demoApp.service 'weeksService', weeksService
-  demoApp.service 'notesService', notesService
 
   demoApp.directive 'noteMove',     noteMoveDirective
   demoApp.filter    'wikipediaUrl', wikipediaUrlFilter

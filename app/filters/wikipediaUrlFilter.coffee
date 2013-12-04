@@ -4,7 +4,6 @@ define [ ]
 
   return () ->
     return (origTxt = '') ->
-
       workTxt = origTxt.slice()
       pat     = /[^\ ]+\.wikipedia\.org\/[^\ ]+/g
 

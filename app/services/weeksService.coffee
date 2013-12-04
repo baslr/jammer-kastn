@@ -1,6 +1,6 @@
-define []
-, () ->
-  class weeksDisplayService
+define ['app']
+, (app) ->
+  class weeksService
     constructor: () ->
 
     getCurrentWeek: (d = new Date()) ->
@@ -15,4 +15,6 @@ define []
 
 
   console.log 'defined weeksDisplayService'
-  weeksDisplayService
+
+  app.service 'weeksService', weeksService
+  undefined

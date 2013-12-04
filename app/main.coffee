@@ -23,7 +23,16 @@ requirejs.config
       
      
 
-require ['angular', 'app', 'templates', 'bootstrap']
+require ['angular',
+         'app',
+         'templates',
+         'bootstrap',
+         'controllers/jammerKastenController',
+         'services/notesService',
+         'services/weeksService',
+         'services/socketService',
+         'directives/wikipediaOverlayDirective',
+         'directives/textWithWikipediaDirective']
          , () ->
   console.log 'called main.js'
 

@@ -1,8 +1,11 @@
 
 fs         = require 'fs'
 http       = require 'http'
+exec       = require('child_process').exec
 crypto     = require 'crypto'
 nodeStatic = require 'node-static'
+request    = require 'request'
+jsdom      = require 'jsdom'
 webServer  = undefined
 staticS    = new nodeStatic.Server ".", {cache: 0 }
 
@@ -14,9 +17,13 @@ webServer.on 'error', (e) ->
   console.error "webServer error:"
   console.dir    e
 
-webServer.on 'request', (req, res) ->      
+webServer.on 'request', (req, res) ->
   if -1 is req.url.search '/socket.io/1'                                 # request to us
-    staticS.serve req, res                                                    # we only serve files, all other stuff via websockets
+    if 0 is req.url.search '/wiki/'
+      wikipediaReadabilityHtml req.url.slice(6), (html) ->
+        res.end html
+    else
+      staticS.serve req, res                                                    # we only serve files, all other stuff via websockets
 
 io   = require('socket.io').listen webServer
 io.set 'log level', 1
@@ -40,22 +47,13 @@ getCurrentWeek = (d = new Date()) ->
 getMaxWeek = (d= new Date("#{new Date().getFullYear()}-12-31")) ->
     return getCurrentWeek d
 
-getParsedNoteText = (origTxt) ->
-  workTxt = origTxt.slice()
-  pat     = /[^\ ]+\.wikipedia\.org\/[^\ ]+/g
 
-  while test = pat.exec workTxt
-    wikiLink = plainWikiLink = workTxt.substr test.index, test[0].length
-
-    if -1 is plainWikiLink.search /^https?:\/\//
-      wikiLink = 'https://'+wikiLink
-
-    else if 0 is plainWikiLink.search /^http:\/\//
-      wikiLink = 'https'+ plainWikiLink.slice 4
-
-    origTxt = origTxt.replace plainWikiLink, "<a href=\"#{wikiLink}\" target=\"_blank\">#{decodeURIComponent wikiLink}</a>"
-
-  return origTxt
+wikipediaReadabilityHtml = (url, cb) ->
+  console.log url
+  exec "phantomjs test.js \"#{url}\"", {maxBuffer:1024*1024*10}, (e, stdout, stderr) ->
+    console.dir e
+    console.dir stderr
+    cb stdout
 
 
 io.sockets.on 'connection', (socket) ->

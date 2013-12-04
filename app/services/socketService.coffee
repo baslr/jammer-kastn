@@ -45,4 +45,15 @@ define ['socketIO', 'angular']
 
 
   console.log 'defined socketService'
-  socketService
+
+  service = angular.module 'socketServiceModule', []
+
+  service.provider 'socketService', () ->
+    conf = {port:4433, hostname:'0.0.0.0', protocol:'https'}
+    return {
+      $get : [ '$rootScope', '$timeout', (rootScope, timeout) ->
+        new socketService rootScope, timeout, conf ]
+      set  : (confIn) -> conf = confIn
+    }
+
+  undefined

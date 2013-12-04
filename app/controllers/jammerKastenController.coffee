@@ -2,8 +2,8 @@
 global = this
 
 
-define ['jquery', 'safari-reader']
-        , ($, safariReader) ->
+define ['app', 'jquery', 'safari-reader']
+        , (app, $, safariReader) ->
   angularModule = [  '$scope'
                    , '$compile'
                    , '$templateCache'
@@ -173,10 +173,8 @@ define ['jquery', 'safari-reader']
           ($ iframe).append reader.contentDocument
 
           # ($ 'HTML').replaceWith reader.contentDocument
-
-
-
     undefined
 
   console.log 'defined jammerKastenController'
-  return angularModule
+  app.controller 'jammerKastenController', angularModule
+  undefined

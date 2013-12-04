@@ -24,7 +24,7 @@ define ['app']
         <p>{{ note.caption }}</p>
       </div>
       <div class="panel-body">
-        <div data-ng-bind-html="note.text | wikipediaUrl"></div>
+        <div data-text-with-wikipedia></div>
         <button class="btn btn-block btn-default btn-xs" style="text-align: center;" data-ng-click="showHideNote(note)">{{ note.comments.length }} Kommentare</button>
         <dl style="max-height: 200px; overflow-y: scroll;" data-ng-hide="note.hide">
           <dt ng-repeat-start="user in note.comments" data-ng-style="user.style" style="padding-left:10px;">{{user.name}}</dt>

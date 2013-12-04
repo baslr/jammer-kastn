@@ -1,7 +1,8 @@
 
-define ['services/socketService',
+define ['app',
+        'services/socketService',
         'services/weeksService']
-        , () ->
+        , (app) ->
   class notesService
     constructor: (@socket, @weeksService) ->
       console.log 'notesSocket constructor'
@@ -43,4 +44,5 @@ define ['services/socketService',
 
 
   console.log 'defined notesService'
-  return ['socketService', 'weeksService', notesService]
+  app.service 'notesService', ['socketService', 'weeksService', notesService]
+  undefined
