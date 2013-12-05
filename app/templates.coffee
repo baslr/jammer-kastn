@@ -31,13 +31,9 @@ define ['app']
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#">Link</a></li>
         <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown">News <b class="caret"></b></a>
+          <a class="dropdown-toggle" data-toggle="dropdown">News <span class="label label-info">{{news.length}}</span><b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Separated link</a></li>
+            <li data-ng-repeat="new in news"><a>{{new}}</a></li>
           </ul>
         </li>
         <form class="navbar-form navbar-right">

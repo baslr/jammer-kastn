@@ -37,6 +37,7 @@ define ['app', 'jquery']
     scope.currentYear = new Date().getFullYear()
     scope.currentWeek = weeksService.getCurrentWeek()
     scope.notes       = []
+    scope.news        = ['A', 'B', 'C']
 
     notesService.requestNotesAndDropDown scope, scope.currentYear, scope.currentWeek
 
