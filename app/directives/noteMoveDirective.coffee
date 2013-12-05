@@ -1,6 +1,6 @@
 
-define ['jquery']
-        , ($) ->
+define ['jquery', 'app']
+        , ($, app) ->
 
   directive = (notesService) ->
     return {
@@ -38,7 +38,6 @@ define ['jquery']
         ($ document).on 'mouseup',   mouseUp
 
       paps.on '$destroy', () ->
-        console.log 'paps.on $destroy'
         elem.off 'mousedown', mouseDown
         mouseUp()
         elem = null
@@ -51,4 +50,6 @@ define ['jquery']
     }
 
   console.log 'defined noteMoveDirective'
-  return ['notesService', directive]
+
+  app.directive 'noteMove', ['notesService', directive]
+  undefined

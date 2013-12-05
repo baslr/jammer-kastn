@@ -1,11 +1,9 @@
 
 define [  'services/socketService'
-        , 'directives/noteMoveDirective'
-        , 'filters/wikipediaUrlFilter'
         , 'angular'
         , 'angular-route'
         , 'angular-sanitize']
-        , (socketService, noteMoveDirective, wikipediaUrlFilter) ->
+        , (socketService, wikipediaUrlFilter) ->
   
   demoApp = angular.module 'demoApp', ['ngRoute', 'ngSanitize', 'socketServiceModule']
 
@@ -26,11 +24,6 @@ define [  'services/socketService'
         console.log '.on $viewContentLoaded'
         templateCache.removeAll()
   ]
-
-
-
-  demoApp.directive 'noteMove',     noteMoveDirective
-  demoApp.filter    'wikipediaUrl', wikipediaUrlFilter
 
   console.log 'defined app'
   return demoApp

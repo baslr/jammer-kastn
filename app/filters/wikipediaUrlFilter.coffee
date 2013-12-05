@@ -1,8 +1,8 @@
 
-define [ ]
-        , () ->
+define ['app']
+        , (app) ->
 
-  return () ->
+  filter = () ->
     return (origTxt = '') ->
       workTxt = origTxt.slice()
       pat     = /[^\ ]+\.wikipedia\.org\/[^\ ]+/g
@@ -20,6 +20,8 @@ define [ ]
         else if 0 is plainWikiLink.search /^http:\/\//
           wikiLink = 'https'+ plainWikiLink.slice 4
 
-        origTxt = origTxt.replace plainWikiLink, "<a href=\"#{wikiLink}\" target=\"_blank\">#{decodeURIComponent plainWikiLink.slice txtPat.lastIndex}</a>"
+        wikiText = decodeURIComponent(plainWikiLink.slice txtPat.lastIndex).replace /_/g, ' '
+        origTxt  = origTxt.replace plainWikiLink, "<a href=\"#{wikiLink}\" target=\"_blank\">#{wikiText}</a>"
 
       return origTxt
+  app.filter 'wikipediaUrl', filter

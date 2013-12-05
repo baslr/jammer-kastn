@@ -40,6 +40,8 @@ define ['app',
       @socket.emit 'set-index', {id:noteId, index:index}
 
     addNote:       (note) -> @socket.emit 'add-note', note
+    addComment:    (note, comment) -> @socket.emit 'add-comment', {noteId:note.id, comment:comment}
+
     setHideStatus: (note) -> @socket.emit 'set-hide-status', {id:note.id,hide:note.hide}
 
 

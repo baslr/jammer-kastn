@@ -5,16 +5,12 @@ define ['app', 'jquery', 'filters/wikipediaUrlFilter']
   directive = (filter, compile) ->
     return {
 
+    scope: { textWithWikipedia: '=' }
+
     link: (scope, element, attrs) ->
       console.log 'textWithWikipedia'
-#      console.dir scope
-#      console.dir element
-#      console.dir attrs
 
-      $html = ($ "<DIV>#{filter('wikipediaUrl') scope.note.text}</DIV>")
-
-      console.dir $html
-
+      $html = ($ "<SPAN>#{filter('wikipediaUrl') scope.textWithWikipedia}</SPAN>")
 
       $html.find('A').each () ->
         $a = ($ this)
@@ -22,8 +18,6 @@ define ['app', 'jquery', 'filters/wikipediaUrlFilter']
         $a.removeAttr 'href'
         $a.removeAttr 'target'
         $a.attr 'data-wikipedia-overlay', url
-
-      # console.dir ($ '<DIV></DIV').append($html).html()
 
       compile($html) scope
       element.append $html

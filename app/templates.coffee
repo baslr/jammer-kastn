@@ -14,7 +14,6 @@ define ['app']
     <button type="button" class="btn btn-default" data-ng-click="nextWeek()"><span class="glyphicon glyphicon-chevron-right"></span></button>
   </div>
 
-  <button data-ng-click="testReader()">test Reader</button>
   <button type="button" class="btn btn-default pull-right" data-ng-click="openCreateNote()"><span class="glyphicon glyphicon-plus"></span></button>
 
   <div id="notesArea">
@@ -24,12 +23,15 @@ define ['app']
         <p>{{ note.caption }}</p>
       </div>
       <div class="panel-body">
-        <div data-text-with-wikipedia></div>
+        <div data-text-with-wikipedia="note.text"></div>
         <button class="btn btn-block btn-default btn-xs" style="text-align: center;" data-ng-click="showHideNote(note)">{{ note.comments.length }} Kommentare</button>
-        <dl style="max-height: 200px; overflow-y: scroll;" data-ng-hide="note.hide">
-          <dt ng-repeat-start="user in note.comments" data-ng-style="user.style" style="padding-left:10px;">{{user.name}}</dt>
-          <dd ng-repeat-end>{{ user.comment }}</dd>
-        </dl>
+        <ul class='list-unstyled' style="max-height: 200px; overflow-y: scroll;" data-ng-hide="note.hide">
+          <li ng-repeat="user in note.comments">
+            <b data-ng-style="user.style">{{user.name}}</b>
+            <span data-text-with-wikipedia="user.comment"></span>
+          </li>
+        </ul>
+        <textarea data-comment-note placeholder="Kommentieren" class="form-control" style='margin-top:3px;'></textarea>
       </div>
     </div>
   </div>

@@ -8,6 +8,10 @@ page.settings.userAgent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (K
 
 page.viewportSize = { width: 1024, height: 2000 }
 
+pageError = false
+
+page.onError = (msg, trace) -> pageError = true
+
 wikiPageReadabilityHtml = (url, cb) ->
   page.open url, (status) ->
     # page.render("test.png")
@@ -42,10 +46,12 @@ wikiPageReadabilityHtml = (url, cb) ->
       $art.append ($ '<DIV id="article"></DIV>').append divN
 
       return $art.html()  # 'fups' # JSON.stringify console.dir $art
-
     cb a
 
 wikiPageReadabilityHtml url, (html) ->
+  if ! html or pageError
+    console.log '<DIV>Fehler :(</DIV>'
+    phantom.exit()
 
   pat = /<span><span>\[[^\]]+\]<\/span><\/span>/ig
 
@@ -55,18 +61,13 @@ wikiPageReadabilityHtml url, (html) ->
   html2 = html.slice()
 
   while test = pat.exec html
-#    console.dir "#{test.index} #{test[0].length}"
-
+#   console.dir "#{test.index} #{test[0].length}"
     html2 = html2.replace(test[0], '')
-#    txt +=  html.substr offset, test.index-offset
+#   txt +=  html.substr offset, test.index-offset
+#   offset += Number test[0].length+test.index
+# txt += html.slice offset
 
-#    offset += Number test[0].length+test.index
-
-
-#  txt += html.slice offset
-
-
-  console.dir html2
+  console.log html2
 
   phantom.exit()
 

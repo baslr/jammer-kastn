@@ -32,7 +32,10 @@ require ['angular',
          'services/weeksService',
          'services/socketService',
          'directives/wikipediaOverlayDirective',
-         'directives/textWithWikipediaDirective']
+         'directives/noteMoveDirective',
+         'directives/textWithWikipediaDirective',
+         'directives/commentNoteDirective',
+         'filters/wikipediaUrlFilter']
          , () ->
   console.log 'called main.js'
 

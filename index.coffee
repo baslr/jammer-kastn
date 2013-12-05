@@ -51,8 +51,6 @@ getMaxWeek = (d= new Date("#{new Date().getFullYear()}-12-31")) ->
 wikipediaReadabilityHtml = (url, cb) ->
   console.log url
   exec "phantomjs test.js \"#{url}\"", {maxBuffer:1024*1024*10}, (e, stdout, stderr) ->
-    console.dir e
-    console.dir stderr
     cb stdout
 
 
@@ -123,6 +121,19 @@ io.sockets.on 'connection', (socket) ->
     console.log 'set-hide-status'
     console.dir  noteIn
     getNote(noteIn.id).hide = noteIn.hide
+
+  socket.on 'add-comment', (comment) ->
+    console.log 'add-comment'
+    console.dir  comment
+
+    id      = comment.noteId
+    comment = comment.comment
+
+    note = getNote id
+    return if !note?
+
+    note.comments.push comment
+    io.sockets.emit 'add-comment', {noteId:id, comment:comment}
 
 setInterval () ->
   fs.writeFileSync 'data.json', JSON.stringify data
