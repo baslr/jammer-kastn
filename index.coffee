@@ -27,7 +27,11 @@ webServer.on 'request', (req, res) ->
 
 io   = require('socket.io').listen webServer
 io.set 'log level', 1
-data = require './data.json'
+
+try
+  data = require './data.json'
+catch
+  data = {}
 
 getNote = (id) ->
   for year,n of data
@@ -106,7 +110,6 @@ io.sockets.on 'connection', (socket) ->
     date = "#{date.getFullYear()}-#{date.getMonth()+1}-#{date.getDate()}"
 
     note.id     = crypto.randomBytes(4).toString 'hex'
-    note.writer = 'Elbert N. Stearns'
     note.date   = date
     note.position = {left:'200px', top:'10px', 'z-index':1}
     note.comments = []

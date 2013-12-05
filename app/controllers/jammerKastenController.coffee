@@ -2,8 +2,9 @@
 global = this
 
 
-define ['app', 'jquery', 'safari-reader']
+define ['app', 'jquery']
         , (app, $, safariReader) ->
+  
   angularModule = [  '$scope'
                    , '$compile'
                    , '$templateCache'
@@ -11,9 +12,11 @@ define ['app', 'jquery', 'safari-reader']
                    , '$filter'
                    , 'weeksService'
                    , 'notesService'
-                   , 'socketService']
+                   , 'socketService'
+                   ,  'userConfig']
 
-  angularModule.push (scope, compile, templateCache, q, filter, weeksService, notesService, socketService) ->
+  angularModule.push (scope, compile, templateCache, q, filter, weeksService, notesService, socketService, user) ->
+    console.dir user
     console.log 'called jammerKastenController'
 
     socketService.forward ['reset-notes', 'add-note', 'add-comment', 'set-dropdown', 'msg'], scope
@@ -45,7 +48,7 @@ define ['app', 'jquery', 'safari-reader']
     scope.$on 'msg', (e, msg) -> console.dir msg
 
     modal = (opts) ->
-      defaultOpts = {focus:'INPUT:first', okLabel:'OK'}
+      defaultOpts = {focus:'INPUT:first', okLabel:'OK', title:'Title'}
       opts = angular.extend {}, defaultOpts, opts
       html = ($ templateCache.get 'modalDialog')
 
@@ -53,6 +56,7 @@ define ['app', 'jquery', 'safari-reader']
       deferred  = q.defer()
       noteScope = scope.$new true
       noteScope.okLabel = opts.okLabel
+      noteScope.title   = opts.title
       closeModal = () ->
         html.modal 'hide'
         undefined
@@ -78,12 +82,17 @@ define ['app', 'jquery', 'safari-reader']
       return deferred.promise
 
     scope.openCreateUser = () ->
-      modalOk = () ->
+      modalOk = (html) ->
         console.log 'ok create user'
-        return ''
+        return {
+          userName  : ($ 'INPUT#userName').val().trim(), 
+          email     : ($ 'INPUT#emailAddress').val().trim(),
+          userColor : ($ 'BUTTON#userColorButton')[0].style.backgroundColor}
 
-      modal({ok:modalOk, okLabel:'Hinzufügen', template:'modalCreateUser'}).then(obj) ->
-          console.dir obj
+      modal({ok:modalOk, okLabel:'Hinzufügen', template:'modalCreateUser', title:'Neuer Nutzer'}).then (obj) ->
+        console.dir obj
+        user.name = obj.userName
+        user.color= obj.userColor
 
 
     scope.openCreateNote = () ->
@@ -91,9 +100,9 @@ define ['app', 'jquery', 'safari-reader']
         text = html.find('TEXTAREA').val().trim()
         cap  = html.find('INPUT').val().trim()
         html.val ''
-        return {text:text, caption:cap}
+        return {text:text, caption:cap, writer:user.name, style:{'background-color':user.color}}
 
-      modal({ok:modalOk, okLabel:'Erstellen', template:'modalCreateNote'}).then (obj) ->
+      modal({ok:modalOk, okLabel:'Erstellen', template:'modalCreateNote', title:'Neue Notiz'}).then (obj) ->
         notesService.addNote {note:obj, week:scope.currentWeek, year:scope.currentYear}
 
 

@@ -1,9 +1,8 @@
 
-define [  'services/socketService'
-        , 'angular'
+define [  'angular'
         , 'angular-route'
         , 'angular-sanitize']
-        , (socketService, wikipediaUrlFilter) ->
+        , () ->
   
   demoApp = angular.module 'demoApp', ['ngRoute', 'ngSanitize', 'socketServiceModule']
 
@@ -15,7 +14,7 @@ define [  'services/socketService'
     
     route.otherwise redirectTo: '/'
 
-    socketServiceProvider.set {port:3344, hostname:'127.0.0.1', protocol:'http'}
+    socketServiceProvider.set {port:3344, hostname:document.location.hostname, protocol:'http'}
   ]
   
   demoApp.run -> ['$rootScope', 'templateCache', (rootScope, templateCache) ->
@@ -24,6 +23,8 @@ define [  'services/socketService'
         console.log '.on $viewContentLoaded'
         templateCache.removeAll()
   ]
-
+  
   console.log 'defined app'
+  
+  demoApp.value 'userConfig', {name:'Default', color:'#ffffff'}
   return demoApp

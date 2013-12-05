@@ -13,7 +13,9 @@ define ['jquery', 'app']
         offset= paps.offset()
         pos =
           left : e.originalEvent.webkitMovementX + (if offset.left < 0 then 0 else offset.left) + 'px'
-          top  : e.originalEvent.webkitMovementY + (if offset.top  < 0 then 0 else offset.top)  + 'px'
+          top  : e.originalEvent.webkitMovementY + offset.top
+        
+        pos.top = if pos.top < 60 then '60px' else pos.top + 'px'
 
         notesService.setPosition scope.note.id, pos
         paps.css pos
@@ -28,7 +30,7 @@ define ['jquery', 'app']
 
         z = 1
         ($ 'DIV#notesArea .panel').each ->
-          idx = ($ this).css 'z-index'
+          idx = Number ($ this).css 'z-index'
           z = idx if idx isnt 'auto' and z < idx
         paps.css 'z-index', ++z
 
