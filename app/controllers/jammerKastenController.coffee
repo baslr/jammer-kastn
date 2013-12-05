@@ -11,7 +11,7 @@ define ['app', 'jquery', 'safari-reader']
                    , '$filter'
                    , 'weeksService'
                    , 'notesService'
-                   , 'socketService' ]
+                   , 'socketService']
 
   angularModule.push (scope, compile, templateCache, q, filter, weeksService, notesService, socketService) ->
     console.log 'called jammerKastenController'
@@ -45,12 +45,14 @@ define ['app', 'jquery', 'safari-reader']
     scope.$on 'msg', (e, msg) -> console.dir msg
 
     modal = (opts) ->
-      defaultOpts = {focus:'INPUT:first'}
+      defaultOpts = {focus:'INPUT:first', okLabel:'OK'}
       opts = angular.extend {}, defaultOpts, opts
-      html = ($ templateCache.get opts.template)
+      html = ($ templateCache.get 'modalDialog')
+
+      html.find('DIV.modal-body').append ($ templateCache.get opts.template)
       deferred  = q.defer()
       noteScope = scope.$new true
-
+      noteScope.okLabel = opts.okLabel
       closeModal = () ->
         html.modal 'hide'
         undefined
@@ -75,15 +77,25 @@ define ['app', 'jquery', 'safari-reader']
 
       return deferred.promise
 
+    scope.openCreateUser = () ->
+      modalOk = () ->
+        console.log 'ok create user'
+        return ''
+
+      modal({ok:modalOk, okLabel:'Hinzufügen', template:'modalCreateUser'}).then(obj) ->
+          console.dir obj
+
+
     scope.openCreateNote = () ->
       modalOk = (html) ->
-        text = html.find('TEXTAREA').val()
-        cap  = html.find('INPUT').val()
+        text = html.find('TEXTAREA').val().trim()
+        cap  = html.find('INPUT').val().trim()
         html.val ''
         return {text:text, caption:cap}
 
-      modal({ok:modalOk, template:'modalCreateNote'}).then (obj) ->
+      modal({ok:modalOk, okLabel:'Erstellen', template:'modalCreateNote'}).then (obj) ->
         notesService.addNote {note:obj, week:scope.currentWeek, year:scope.currentYear}
+
 
     scope.showHideNote = (note) ->
       if ! note.hide? then note.hide = true

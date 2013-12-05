@@ -15,12 +15,13 @@ define ['app']
   </div>
 
   <button type="button" class="btn btn-default pull-right" data-ng-click="openCreateNote()"><span class="glyphicon glyphicon-plus"></span></button>
+  <button type="button" class="btn btn-default pull-right" data-ng-click="openCreateUser()">Neuer Nutzer <span class="glyphicon glyphicon-plus"></span></button>
 
   <div id="notesArea">
     <div class="panel panel-default" data-note-move data-ng-repeat="note in notes" style="position:absolute;" data-ng-style="note.position">
       <div style="cursor:pointer;" data-ng-style="note.style" class="panel-heading">
         {{note.writer}} | {{note.date}}
-        <p>{{ note.caption }}</p>
+        <p><b>{{ note.caption }}</b></p>
       </div>
       <div class="panel-body">
         <div data-text-with-wikipedia="note.text"></div>
@@ -35,29 +36,37 @@ define ['app']
       </div>
     </div>
   </div>
-</div>
-"""
+</div>"""
     templateCache.put 'modalCreateNote', """
-<div class="modal fade" id="modalCreateNote" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Neue Notiz</h4>
-      </div>
-      <div class="modal-body">
         <div class="form-group">
           <input    class="form-control" type="text" placeholder="Überschrift">
         </div>
         <div clasl="form-group">
           <textarea class="form-control" rows="5"></textarea>
+        </div>"""
+
+    templateCache.put 'modalCreateUser', """
+        <div class="form-group">
+          <input    class="form-control" type="text" placeholder="Name">
         </div>
+        <div clasl="form-group">
+          <select class="form-control" onchange="this.style.backgroundColor = this.value;"><option value="#123456" style="background-color: #123456"></option>
+                                       <option value="#ffdd00" style="background-color: #ffdd00"></option></select>
+        </div>"""
+
+    templateCache.put 'modalDialog', """
+<div class="modal fade" id="modalDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Neue Notiz</h4>
       </div>
+      <div class="modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-ng-click="cancel()">Abbrechen</button>
-        <button type="button" class="btn btn-primary" data-ng-click="ok()" data-dismiss="modal">Erstellen</button>
+        <button type="button" class="btn btn-primary" data-ng-click="ok()" data-dismiss="modal">{{okLabel}}</button>
       </div>
     </div>
   </div>
-</div>
-"""
+</div>"""
   ]
