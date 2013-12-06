@@ -9,11 +9,10 @@ define ['app', 'jquery']
       console.log 'commentNote'
       ul = element.prev()
       
-      updateScroll = () -> ul.scrollTop ul.find('LI:last').offset().top
-        
+      updateScroll = () -> ul.scrollTop ul[0].scrollHeight
       
       keyDown = (e) ->
-        code = if e.keyCode? then e.keyCode else e.which
+        code  =  e.keyCode || e.wich
         return if code isnt Number 13
 
         e.preventDefault()
@@ -39,7 +38,8 @@ define ['app', 'jquery']
         element.off 'focusout', textOut
         
         ul.unbind 'DOMNodeInserted', updateScroll
-
+        undefined
+      undefined
     }
 
   console.log 'defined commentNoteDirective'
